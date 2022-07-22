@@ -21,3 +21,6 @@ def GetUserInfoByEmail(email):
 				"status":"NLN",
 				"version":0,
 				"msnver":2}
+				
+def OnMSGRecieve(msg):
+	print("stub")

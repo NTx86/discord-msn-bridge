@@ -37,7 +37,8 @@ def SB_MSG(conn,data,userinfo,raw):
 	sync = cmdarg[1]
 	ack = cmdarg[2]
 	msglen = cmdarg[3]
-	safesend(conn, constructmessage("Hello World!","stub@stub.com","stub",sync))
+	OnMSGRecieve(raw)
+	#safesend(conn, constructmessage("Hello World!","stub@stub.com","stub",sync))
 	return 0 #stub
 	
 def SB_OUT(conn,data,userinfo,raw):
