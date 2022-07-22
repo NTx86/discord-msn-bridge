@@ -48,7 +48,6 @@ def NF_SYN(conn,data,userinfo):
 	safesend(conn, f"BLP {sync} {sentversion} AL")
 	#user list
 	userlist = GetUserFriendsByEmailList(userinfo["email"])
-	userlistcount = len(userlist)
 	#foward list
 	SendOutLST(conn,sync,"FL",sentversion,userlist)
 	#some list
