@@ -1,3 +1,5 @@
+from Util import *
+
 def GetUserFriendsByEmailList(email):
 	return {"stub@stub.com":"stub",
 			"stub2@stub.com":"stub2"}
@@ -22,5 +24,5 @@ def GetUserInfoByEmail(email):
 				"version":0,
 				"msnver":2}
 				
-def OnMSGRecieve(msg):
-	print("stub")
+def OnMSGRecieve(conn, msg):
+	SendMessage(conn,msg,"stub@stub.com","stub")

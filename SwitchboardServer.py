@@ -1,19 +1,6 @@
 import socket
 from Util import *
-from Backend import *
-
-def constructmessage(msg,email,nickname,sync):
-	command = ""
-	msnpmsg = "MIME-Version: 1.0\r\n"
-	msnpmsg += "Content-Type: text/plain; charset=UTF-8\r\n"
-	msnpmsg += "X-MMS-IM-Format: FN=Arial; EF=; CO=0; CS=0; PF=22\r\n"
-	msnpmsg += "\r\n"
-	msnpmsg += msg
-	msnplen = len(msnpmsg)
-	command = f"MSG {email} {nickname} {msnplen}\r\n{msnpmsg}"
-	print(command)
-	return command
-	
+from Backend import *	
 
 def SB_USR(conn,data,userinfo,raw):
 	cmdarg = data.split(' ')
@@ -37,8 +24,11 @@ def SB_MSG(conn,data,userinfo,raw):
 	sync = cmdarg[1]
 	ack = cmdarg[2]
 	msglen = cmdarg[3]
-	OnMSGRecieve(raw)
-	#safesend(conn, constructmessage("Hello World!","stub@stub.com","stub",sync))
+	headers,msg = ParseMessage(raw)
+	print(headers)
+	if msg != "\r\n":
+		OnMSGRecieve(conn,msg)
+	#safesend(conn, constructmessage("Hello World!","stub@stub.com","stub"))
 	return 0 #stub
 	
 def SB_OUT(conn,data,userinfo,raw):
