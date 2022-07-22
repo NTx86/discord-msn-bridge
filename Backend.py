@@ -9,13 +9,13 @@ def GetUserInfoByEmail(email):
 				"status":"NLN",
 				"version":0,
 				"msnver":2}
-	elif email == "stub@hotmail.com":
+	elif email == "stub@stub.com":
 		return {"email":"stub@hotmail.com",
 				"nickname":"stub",
 				"status":"NLN",
 				"version":0,
 				"msnver":2}
-	elif email == "stub2@hotmail.com":
+	elif email == "stub2@stub.com":
 		return {"email":"stub2@hotmail.com",
 				"nickname":"stub2",
 				"status":"NLN",

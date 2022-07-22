@@ -27,8 +27,9 @@ def SB_CAL(conn,data,userinfo,raw):
 	cmdarg = data.split(' ')
 	sync = cmdarg[1]
 	callemail = cmdarg[2]
+	calluserinfo = GetUserInfoByEmail(callemail)
 	safesend(conn, f"CAL {sync} RINGING 1337")
-	safesend(conn, f"JOI {callemail} #general")
+	safesend(conn, f"JOI {callemail} {calluserinfo['nickname']}")
 
 def SB_MSG(conn,data,userinfo,raw):
 	raw = raw.decode('utf-8')
