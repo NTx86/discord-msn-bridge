@@ -3,6 +3,7 @@ import threading
 from NotificationServer import NF_cmds 
 from SwitchboardServer import SB_cmds
 from Util import *
+from bot import startbot
 
 
 def connected(conn,addr, srvcmds):
@@ -114,6 +115,8 @@ def startlisteningSB():
 
 SBthread = threading.Thread(target=startlisteningSB)
 SBthread.start()
+Botthread = threading.Thread(target=startbot)
+Botthread.start()
 
 while 1:
 	TCP_IP = '0.0.0.0'

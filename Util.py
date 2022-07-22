@@ -1,5 +1,7 @@
 import socket
 
+connected_clients = []
+
 def safesend(socket,data):
 	try:
 		socket.send((data+"\r\n").encode())

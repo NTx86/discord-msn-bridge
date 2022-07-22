@@ -1,6 +1,6 @@
 import socket
 from Util import *
-from Backend import *	
+from Backend import *
 
 def SB_USR(conn,data,userinfo,raw):
 	cmdarg = data.split(' ')
@@ -8,6 +8,7 @@ def SB_USR(conn,data,userinfo,raw):
 	userinfo["email"] = cmdarg[2]
 	userinfo["nickname"] = GetUserInfoByEmail(cmdarg[2])["nickname"]
 	email, nickname = userinfo['email'], userinfo['nickname']
+	connected_clients.append(conn)
 	safesend(conn, f"USR {sync} OK {email} {nickname}")
 	
 def SB_CAL(conn,data,userinfo,raw):

@@ -76,7 +76,7 @@ def NF_CHG(conn,data,userinfo):
 def NF_CVR(conn,data,userinfo):
 	cmdarg = data.split(' ')
 	sync = cmdarg[1]
-	safesend(conn, f"CVR {sync} 2.2.1053 2.2.1053 2.2.1053  http://messenger.hotmail.com/mmsetup.exe ")
+	safesend(conn, f"CVR {sync} 0 0 0  http://messenger.hotmail.com/mmsetup.exe ")
 	return 0
 	
 def NF_XFR(conn,data,userinfo):
@@ -88,6 +88,13 @@ def NF_XFR(conn,data,userinfo):
 	
 def NF_OUT(conn,data,userinfo):
 	return 2
+	
+def NF_REA(conn,data,userinfo):
+	cmdarg = data.split(' ')
+	sync = cmdarg[1]
+	useremail = cmdarg[2]
+	usernamechg = cmdarg[3]
+	safesend(conn, f"REA {sync} 19 {useremail} {usernamechg}")
 
 NF_cmds = {"VER": NF_VER,
 			"INF": NF_INF,
@@ -96,4 +103,5 @@ NF_cmds = {"VER": NF_VER,
 			"CHG": NF_CHG,
 			"CVR": NF_CVR,
 			"XFR": NF_XFR,
-			"OUT": NF_OUT}
+			"OUT": NF_OUT,
+			"REA": NF_REA}
