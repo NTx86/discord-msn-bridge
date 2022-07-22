@@ -50,4 +50,4 @@ def ParseMessage(raw):
 	return headers, msg
 	
 def SendMessage(conn,msg,email,nickname):
-	safesend(conn, constructmessage(msg,"stub@stub.com","stub"))
+	safesend(conn, constructmessage(msg,email,nickname))
