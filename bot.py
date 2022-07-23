@@ -4,7 +4,7 @@ import time
 from Util import *
 import asyncio
 import urllib.parse
-from config import discordtoken
+import config
 import random
 
 class MyClient(discord.Client):
@@ -40,6 +40,6 @@ def startbot():
 	#intents.message_content = True
 
 	client = MyClient(intents=intents)
-	client.run(discordtoken)
+	client.run(config.discordtoken)
 
 Botthread = threading.Thread(target=startbot)

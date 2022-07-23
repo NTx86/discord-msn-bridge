@@ -4,6 +4,7 @@ from NotificationServer import NF_cmds
 from SwitchboardServer import SB_cmds
 from Util import *
 from bot import startbot, Botthread
+import config
 
 
 def connected(conn,addr, srvcmds):
@@ -98,7 +99,7 @@ def SB_connected(conn,addr, srvcmds):
 def startlisteningSB():
 	while 1:
 		TCP_IP = '0.0.0.0'
-		TCP_PORT = 53641
+		TCP_PORT = config.SB_port
 		BUFFER_SIZE = 1024
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.bind((TCP_IP, TCP_PORT))
@@ -116,7 +117,7 @@ Botthread.start()
 
 while 1:
 	TCP_IP = '0.0.0.0'
-	TCP_PORT = 1863
+	TCP_PORT = config.NF_port
 	BUFFER_SIZE = 1024
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

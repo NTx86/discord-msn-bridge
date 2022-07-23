@@ -1,6 +1,7 @@
 import socket
 from Util import *
 from Backend import *
+import config
 
 def NF_VER(conn,data,userinfo):
 	cmdarg = data.split(' ')
@@ -88,7 +89,7 @@ def NF_XFR(conn,data,userinfo):
 	sync = cmdarg[1]
 	key = 1337 #if auth is needed then this will have to be replaced with a random num
 	print("XFR redirecting to switchboard")
-	safesend(conn, f"XFR {sync} SB 192.168.1.64:53641 CKI {key}")
+	safesend(conn, f"XFR {sync} SB {config.server}:{config.SB_port} CKI {key}")
 	
 def NF_OUT(conn,data,userinfo):
 	return 2
