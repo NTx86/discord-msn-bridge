@@ -85,18 +85,14 @@ def SB_connected(conn,addr, srvcmds):
 			else:
 				if len(cmdarg) > 1: sync = cmdarg[1] 
 				else: sync = "1"
-				senderror(conn,sync,500)
+				RemoveClient(conn)
 				conn.close()
 		conn.close()
 	except socket.error as e:
-		#sendtoallfriends(email,f"ILN 1 FLN {email} {username}")
-		#if email in clients:
-		#	del clients[email]
+		RemoveClient(conn)
 		conn.close()
 	finally:
-		#sendtoallfriends(email,f"ILN 1 FLN {email} {username}")
-		#if email in clients:
-		#	del clients[email]
+		RemoveClient(conn)
 		conn.close()
 
 def startlisteningSB():
