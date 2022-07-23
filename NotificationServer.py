@@ -3,11 +3,21 @@ from Util import *
 from Backend import *
 import config
 
+MSNPversions = {"MSNP2":2,
+				"MSNP3":3,
+				"MSNP4":4,
+				"MSNP5":5,
+				"MSNP6":6,
+				"MSNP7":7}
+
 def NF_VER(conn,data,userinfo):
 	cmdarg = data.split(' ')
 	sync = cmdarg[1]
-	safesend(conn, f"VER {sync} MSNP4 CVR0")
-	userinfo["msnver"] = 4
+	ver = cmdarg[2]
+	if not ver in MSNPversions:
+		ver = "MSNP7"
+	safesend(conn, f"VER {sync} {ver} CVR0")
+	userinfo["msnver"] = MSNPversions[ver]
 	return 0
 	
 def NF_INF(conn,data,userinfo):
@@ -49,17 +59,21 @@ def NF_SYN(conn,data,userinfo):
 	safesend(conn, f"GTC {sync} {sentversion} A")
 	safesend(conn, f"BLP {sync} {sentversion} AL")
 	safesend(conn, f"BLP {sync} {sentversion} AL")
-	
+	#usergroup
+	usergroup = -1
+	if userinfo["msnver"] >= 7:
+		safesend(conn, f"LSG {sync} {sentversion} 1 1 0 Other%20Contacts 0")
+		usergroup = 0
 	#user list
 	userlist = GetUserFriendsByEmailList(userinfo["email"])
 	#foward list
-	SendOutLST(conn,sync,"FL",sentversion,userlist)
+	SendOutLST(conn,sync,"FL",sentversion,userlist,usergroup)
 	#some list
-	SendOutLST(conn,sync,"AL",sentversion,userlist)
+	SendOutLST(conn,sync,"AL",sentversion,userlist,-1)
 	#block list
 	safesend(conn, f"LST {sync} BL {sentversion} 0 0")
 	#reverse list
-	SendOutLST(conn,sync,"RL",sentversion,userlist)
+	SendOutLST(conn,sync,"RL",sentversion,userlist,-1)
 	
 	#send online statuses
 	currentcount = 1

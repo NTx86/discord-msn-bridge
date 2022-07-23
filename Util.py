@@ -14,13 +14,18 @@ def senderror(socket,sync,errnum):
 	errnum = str(errnum)
 	safesend(socket, errnum+" "+sync)
 
-def SendOutLST(conn,sync,mlist,sentversion,userlist):
+def SendOutLST(conn,sync,mlist,sentversion,userlist,usergroup):
 	userlistcount = len(userlist)
 	currentcount = 1
+	#msnp7 usergroup support
+	if usergroup == -1:
+		usergroup = ""
+	else:
+		usergroup = " "+str(usergroup)
 	for user in userlist:
 		email = user
 		nickname = userlist[user]
-		safesend(conn, f"LST {sync} {mlist} {sentversion} {currentcount} {userlistcount} {email} {nickname}")
+		safesend(conn, f"LST {sync} {mlist} {sentversion} {currentcount} {userlistcount} {email} {nickname}{usergroup}")
 		currentcount += 1
 		
 def constructmessage(msg,email,nickname):
