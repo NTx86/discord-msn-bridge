@@ -1,6 +1,6 @@
 import socket
 
-connected_clients = []
+connected_clients = {}
 
 def safesend(socket,data):
 	try:
@@ -60,5 +60,11 @@ def SendMessage(conn,msg,email,nickname):
 	safesend(conn, constructmessage(msg,email,nickname))
 	
 def RemoveClient(conn):
-	if conn in connected_clients:
-		connected_clients.remove(conn)
+	connected_clients.pop(conn, None)
+	#if conn in connected_clients:
+	#	connected_clients.remove(conn)
+		
+def check_int(s):
+    if s[0] in ('-', '+'):
+        return s[1:].isdigit()
+    return s.isdigit()

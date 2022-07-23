@@ -2,6 +2,7 @@ import socket
 from Util import *
 from Backend import *
 import config
+import random
 
 MSNPversions = {"MSNP2":2,
 				"MSNP3":3,
@@ -101,7 +102,7 @@ def NF_CVR(conn,data,userinfo):
 def NF_XFR(conn,data,userinfo):
 	cmdarg = data.split(' ')
 	sync = cmdarg[1]
-	key = 1337 #if auth is needed then this will have to be replaced with a random num
+	key = random.randint(0, 999999999)
 	print("XFR redirecting to switchboard")
 	safesend(conn, f"XFR {sync} SB {config.server}:{config.SB_port} CKI {key}")
 	

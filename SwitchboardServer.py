@@ -8,7 +8,7 @@ def SB_USR(conn,data,userinfo,raw):
 	userinfo["email"] = cmdarg[2]
 	userinfo["nickname"] = GetUserInfoByEmail(cmdarg[2])["nickname"]
 	email, nickname = userinfo['email'], userinfo['nickname']
-	connected_clients.append(conn)
+	connected_clients[conn] = ""
 	safesend(conn, f"USR {sync} OK {email} {nickname}")
 	
 def SB_CAL(conn,data,userinfo,raw):
@@ -16,6 +16,8 @@ def SB_CAL(conn,data,userinfo,raw):
 	sync = cmdarg[1]
 	callemail = cmdarg[2]
 	calluserinfo = GetUserInfoByEmail(callemail)
+	userinfo["discordid"] = calluserinfo['discordid']
+	connected_clients[conn] = calluserinfo['discordid']
 	safesend(conn, f"CAL {sync} RINGING 1337")
 	safesend(conn, f"JOI {callemail} {calluserinfo['nickname']}")
 
@@ -28,7 +30,7 @@ def SB_MSG(conn,data,userinfo,raw):
 	headers,msg = ParseMessage(raw)
 	print(headers)
 	if msg != "\r\n":
-		OnMSGRecieve(conn,msg)
+		OnMSGRecieve(conn,msg,userinfo)
 	#safesend(conn, constructmessage("Hello World!","stub@stub.com","stub"))
 	return 0 #stub
 	
