@@ -11,7 +11,7 @@ class MyClient(discord.Client):
 	async def on_ready(self):
 		print('Logged on as', self.user)
 		channel = client.get_channel(999990934425047092)
-		await channel.send('test sample code')
+		await channel.send('Bot started')
 
 	async def on_message(self, message):
 		# don't respond to ourselves

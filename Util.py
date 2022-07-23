@@ -45,7 +45,7 @@ def ParseMessage(raw):
 		HeaderName, HeaderArg = Args[0], Args[1]
 		headers[HeaderName] = HeaderArg
 	msg = raw.split("\r\n\r\n")
-	if len(msg) == 2:
+	if len(msg) >= 2:
 		msg = msg[1]
 	else:
 		msg = ""

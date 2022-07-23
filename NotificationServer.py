@@ -41,11 +41,14 @@ def NF_SYN(conn,data,userinfo):
 	cmdarg = data.split(' ')
 	sync = cmdarg[1]
 	sentversion = int(cmdarg[2])+1
+	
 	safesend(conn, f"SYN {sync} {sentversion}") #first response
+	
 	#privacy settings
 	safesend(conn, f"GTC {sync} {sentversion} A")
 	safesend(conn, f"BLP {sync} {sentversion} AL")
 	safesend(conn, f"BLP {sync} {sentversion} AL")
+	
 	#user list
 	userlist = GetUserFriendsByEmailList(userinfo["email"])
 	#foward list
@@ -56,6 +59,7 @@ def NF_SYN(conn,data,userinfo):
 	safesend(conn, f"LST {sync} BL {sentversion} 0 0")
 	#reverse list
 	SendOutLST(conn,sync,"RL",sentversion,userlist)
+	
 	#send online statuses
 	currentcount = 1
 	for user in userlist:
@@ -84,7 +88,7 @@ def NF_XFR(conn,data,userinfo):
 	sync = cmdarg[1]
 	key = 1337 #if auth is needed then this will have to be replaced with a random num
 	print("XFR redirecting to switchboard")
-	safesend(conn, f"XFR {sync} SB 127.0.0.1:53641 CKI {key}")
+	safesend(conn, f"XFR {sync} SB 192.168.1.64:53641 CKI {key}")
 	
 def NF_OUT(conn,data,userinfo):
 	return 2
