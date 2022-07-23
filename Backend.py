@@ -21,7 +21,5 @@ def GetUserInfoByEmail(email):
 				"msnver":2}
 
 				
-def OnMSGRecieve(conn, msg): #https://discord.com/api/webhooks/999991447086440458/potBKZv_2LdtI87OHi3lc-HUo5CYXQQPxVC5Oolv8g3Uwe9NOFExseOCDc5cwiFX7Wqb
+def OnMSGRecieve(conn, msg):
 	send_my_message(msg)
-	#WebhookSend(msg, "https://discord.com/api/webhooks/999991447086440458/potBKZv_2LdtI87OHi3lc-HUo5CYXQQPxVC5Oolv8g3Uwe9NOFExseOCDc5cwiFX7Wqb")
-	#SendMessage(conn,msg,"stub@stub.com","stub")
