@@ -33,6 +33,7 @@ def SB_MSG(conn,data,userinfo,raw):
 	return 0 #stub
 	
 def SB_OUT(conn,data,userinfo,raw):
+	RemoveClient(conn)
 	return 2
 
 
