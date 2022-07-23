@@ -3,7 +3,7 @@ import threading
 from NotificationServer import NF_cmds 
 from SwitchboardServer import SB_cmds
 from Util import *
-from bot import startbot
+from bot import startbot, Botthread
 
 
 def connected(conn,addr, srvcmds):
@@ -74,10 +74,11 @@ def SB_connected(conn,addr, srvcmds):
 			if cmd in srvcmds:
 				cstatus = srvcmds[cmd](conn,command,userinfo,data)
 				if cstatus == 1:
-					senderror(conn,sync,500)
+					RemoveClient(conn)
 					conn.close()
 					break
 				elif cstatus == 2:
+					RemoveClient(conn)
 					conn.close()
 					break
 				continue
@@ -115,7 +116,6 @@ def startlisteningSB():
 
 SBthread = threading.Thread(target=startlisteningSB)
 SBthread.start()
-Botthread = threading.Thread(target=startbot)
 Botthread.start()
 
 while 1:

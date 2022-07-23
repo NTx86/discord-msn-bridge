@@ -17,8 +17,9 @@ class MyClient(discord.Client):
 		# don't respond to ourselves
 		if message.author == self.user:
 			return
-
-		SendMessage(connected_clients[0], message.content, f"stub{random.randint(0, 9999999)}@stub.com", urllib.parse.quote(str(message.author)))
+		
+		for client in connected_clients:
+			SendMessage(client, message.content, f"stub{random.randint(0, 9999999)}@stub.com", urllib.parse.quote(str(message.author)))
 		#if message.content == 'ping':
 		#	await message.channel.send('pong')
 			

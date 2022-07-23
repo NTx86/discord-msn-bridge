@@ -53,3 +53,7 @@ def ParseMessage(raw):
 	
 def SendMessage(conn,msg,email,nickname):
 	safesend(conn, constructmessage(msg,email,nickname))
+	
+def RemoveClient(conn):
+	if conn in connected_clients:
+		connected_clients.remove(conn)
