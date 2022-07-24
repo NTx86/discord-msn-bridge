@@ -64,7 +64,7 @@ def connected(conn,addr,srvcmds):
 
 def SB_connected(conn,addr, srvcmds):
 	email, username, status, version, msnver = 1,2,3,4,5
-	conninfo = {}
+	conninfo = {"cmdwlist":["USR","OUT"]}
 	try:
 		while 1:
 			data = conn.recv(BUFFER_SIZE)
@@ -78,6 +78,10 @@ def SB_connected(conn,addr, srvcmds):
 			else: sync = "1"
 			cmd = cmdarg[0]
 			if cmd in srvcmds:
+				if IsCMDAllowed(cmd,conninfo) == False:
+					senderror(conn,sync,500) #todo use the proper error code
+					conn.close()
+					break
 				cstatus = srvcmds[cmd](conn,command,conninfo,data)
 				if cstatus == 1:
 					MSNSession.RemoveSBsession(conn)

@@ -10,6 +10,7 @@ def SB_USR(conn,data,conninfo,raw):
 	email, nickname = userdata['email'], userdata['nickname']
 	conninfo["email"] = email
 	MSNSession.CreateSBsession(conn,"")
+	conninfo["cmdwlist"] = []
 	safesend(conn, f"USR {sync} OK {email} {nickname}")
 	
 def SB_CAL(conn,data,conninfo,raw):
