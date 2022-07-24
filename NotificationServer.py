@@ -23,12 +23,16 @@ def NF_VER(conn,data,userinfo):
 	return 0
 	
 def NF_INF(conn,data,userinfo):
+	if userinfo["msnver"] == None:
+		return 1
 	cmdarg = data.split(' ')
 	sync = cmdarg[1]
 	safesend(conn,f"INF {sync} MD5")
 	return 0
 	
 def NF_USR(conn,data,userinfo):
+	if userinfo["msnver"] == None:
+		return 1
 	cmdarg = data.split(' ')
 	sync = cmdarg[1]
 	email = userinfo["email"]
