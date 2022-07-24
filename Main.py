@@ -18,7 +18,8 @@ def connected(conn,addr,srvcmds):
 	email, username, status, version, msnver = 1,2,3,4,5
 	userinfo = {"email":None,
 				"msnver":None,
-				"cmdwlist":["VER","INF","USR","OUT"]}
+				"cmdwlist":["VER","INF","USR","OUT"],
+				"authstage":False}
 	try:
 		while 1:
 			data = conn.recv(BUFFER_SIZE)

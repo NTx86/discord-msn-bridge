@@ -49,9 +49,12 @@ def NF_USR(conn,data,userinfo):
 			userinfo["session"]["version"] = random.randint(1,1000) #random
 			userinfo["session"]["nickname"] = "MSNuser"
 			userinfo["email"] = email #for internal session
+			userinfo["authstage"] = True
 			return 0
 		if cmdarg[3] == "S":
 			#usrdata = getuserdata(email)
+			if userinfo["authstage"] == False:
+				return 1
 			passwordmd5sent = cmdarg[4]
 			if passwordmd5sent == GenerateMD5password(config.MSN_password, "1013928519.693957190"):
 				nickname = userinfo["session"]["nickname"]
