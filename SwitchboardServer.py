@@ -29,9 +29,9 @@ def SB_MSG(conn,data,userinfo,raw):
 	msglen = cmdarg[3]
 	headers,msg = ParseMessage(raw)
 	print(headers)
-	if msg != "\r\n":
-		OnMSGRecieve(conn,msg,userinfo)
-	#safesend(conn, constructmessage("Hello World!","stub@stub.com","stub"))
+	if "text/plain" in headers["Content-Type"]:
+		if msg != "\r\n":
+			OnMSGRecieve(conn,msg,userinfo)
 	return 0 #stub
 	
 def SB_OUT(conn,data,userinfo,raw):
