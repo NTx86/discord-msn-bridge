@@ -4,6 +4,7 @@ from Backend import *
 import config
 import random
 import MSNSession
+import threading
 
 MSNPversions = {"MSNP2":2,
 				"MSNP3":3,
@@ -138,6 +139,11 @@ def NF_REA(conn,data,userinfo):
 	sync = cmdarg[1]
 	useremail = cmdarg[2]
 	usernamechg = cmdarg[3]
+	email = userinfo['email']
+	if useremail == email:
+		session = MSNSession.GetSession(email)
+		with threading.Lock():
+			session["nickname"] = usernamechg
 	safesend(conn, f"REA {sync} 19 {useremail} {usernamechg}")
 
 NF_cmds = {"VER": NF_VER,
