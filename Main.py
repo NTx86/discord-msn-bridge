@@ -14,11 +14,11 @@ def IsCMDAllowed(cmd,userinfo):
 		return True
 	return False
 	
-def connected(conn,addr, srvcmds):
+def connected(conn,addr,srvcmds):
 	email, username, status, version, msnver = 1,2,3,4,5
 	userinfo = {"email":None,
 				"msnver":None,
-				"cmdwlist":["VER","INF","USR"]}
+				"cmdwlist":["VER","INF","USR","OUT"]}
 	try:
 		while 1:
 			data = conn.recv(BUFFER_SIZE)
@@ -56,15 +56,9 @@ def connected(conn,addr, srvcmds):
 		MSNSession.RemoveSession(userinfo['email'])
 		conn.close()
 	except socket.error as e:
-		#sendtoallfriends(email,f"ILN 1 FLN {email} {username}")
-		#if email in clients:
-		#	del clients[email]
 		MSNSession.RemoveSession(userinfo['email'])
 		conn.close()
 	finally:
-		#sendtoallfriends(email,f"ILN 1 FLN {email} {username}")
-		#if email in clients:
-		#	del clients[email]
 		MSNSession.RemoveSession(userinfo['email'])
 		conn.close()
 
