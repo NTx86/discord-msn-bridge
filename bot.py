@@ -6,6 +6,7 @@ import asyncio
 import urllib.parse
 import config
 import random
+from MSNSession import SB_sessions
 
 class MyClient(discord.Client):
 	async def on_ready(self):
@@ -16,8 +17,8 @@ class MyClient(discord.Client):
 		if message.author == self.user:
 			return
 		
-		for client in connected_clients:
-			if connected_clients[client] == message.channel.id:
+		for client in SB_sessions:
+			if SB_sessions[client] == message.channel.id:
 				SendMessage(client, message.content, f"{message.id}@discorduser.com", urllib.parse.quote(str(message.author)))
 			
 	async def sendmessage(self, message, discordid):

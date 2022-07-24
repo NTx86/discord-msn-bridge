@@ -3,6 +3,7 @@ from Util import *
 from Backend import *
 import config
 import random
+import MSNSession
 
 MSNPversions = {"MSNP2":2,
 				"MSNP3":3,
@@ -34,17 +35,22 @@ def NF_USR(conn,data,userinfo):
 	if cmdarg[2] == 'MD5':
 		if cmdarg[3] == "I":
 			email = cmdarg[4].lower()
+			if MSNSession.DoesSessionExists(email):
+				senderror(conn, sync, 207) #Already logged in
+				return 2
 			safesend(conn,f"USR {sync} MD5 S 1013928519.693957190")
 			print("sent a challenge")
 			userinfo["email"] = email
-			userinfo["version"] = 54 #random
-			userinfo["nickname"] = ""
+			userinfo["version"] = random.randint(1,1000) #random
+			userinfo["nickname"] = "MSNuser"
 			return 0
 		if cmdarg[3] == "S":
 			#usrdata = getuserdata(email)
 			passwordmd5sent = cmdarg[4]
 			if passwordmd5sent == GenerateMD5password(config.MSN_password, "1013928519.693957190"):
-				nickname = "MSNuser"
+				nickname = userinfo["nickname"]
+				MSNSession.CreateSession(email, userinfo)
+				userinfo["cmdwlist"] = []
 				safesend(conn, f"USR {sync} OK {email} {nickname}")
 				print("auth complete")
 			else:
@@ -107,6 +113,10 @@ def NF_XFR(conn,data,userinfo):
 	cmdarg = data.split(' ')
 	sync = cmdarg[1]
 	key = random.randint(0, 999999999)
+	session = MSNSession.GetSession(userinfo['email'])
+	if session == None:
+		return 1
+	MSNSession.CreateKey(key,session)
 	print("XFR redirecting to switchboard")
 	safesend(conn, f"XFR {sync} SB {config.server}:{config.SB_port} CKI {key}")
 	

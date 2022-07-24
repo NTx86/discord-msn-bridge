@@ -1,27 +1,28 @@
 import socket
 from Util import *
 from Backend import *
+import MSNSession
 
-def SB_USR(conn,data,userinfo,raw):
+def SB_USR(conn,data,conninfo,raw):
 	cmdarg = data.split(' ')
-	sync = cmdarg[1]
-	userinfo["email"] = cmdarg[2]
-	userinfo["nickname"] = GetUserInfoByEmail(cmdarg[2])["nickname"]
-	email, nickname = userinfo['email'], userinfo['nickname']
-	connected_clients[conn] = ""
+	sync, email, key = cmdarg[1],cmdarg[2],cmdarg[3]
+	userdata = MSNSession.ReadKey(int(key))
+	email, nickname = userdata['email'], userdata['nickname']
+	conninfo["email"] = email
+	MSNSession.CreateSBsession(conn,"")
 	safesend(conn, f"USR {sync} OK {email} {nickname}")
 	
-def SB_CAL(conn,data,userinfo,raw):
+def SB_CAL(conn,data,conninfo,raw):
 	cmdarg = data.split(' ')
 	sync = cmdarg[1]
 	callemail = cmdarg[2]
 	calluserinfo = GetUserInfoByEmail(callemail)
-	userinfo["discordid"] = calluserinfo['discordid']
-	connected_clients[conn] = calluserinfo['discordid']
+	conninfo["discordid"] = calluserinfo['discordid']
+	MSNSession.ChangeSBsession(conn,calluserinfo['discordid'])
 	safesend(conn, f"CAL {sync} RINGING 1337")
 	safesend(conn, f"JOI {callemail} {calluserinfo['nickname']}")
 
-def SB_MSG(conn,data,userinfo,raw):
+def SB_MSG(conn,data,conninfo,raw):
 	raw = raw.decode('utf-8')
 	cmdarg = raw.split(' ')
 	sync = cmdarg[1]
@@ -31,11 +32,10 @@ def SB_MSG(conn,data,userinfo,raw):
 	print(headers)
 	if "text/plain" in headers["Content-Type"]:
 		if msg != "\r\n":
-			OnMSGRecieve(conn,msg,userinfo)
+			OnMSGRecieve(conn,msg,conninfo)
 	return 0 #stub
 	
-def SB_OUT(conn,data,userinfo,raw):
-	RemoveClient(conn)
+def SB_OUT(conn,data,conninfo,raw):
 	return 2
 
 

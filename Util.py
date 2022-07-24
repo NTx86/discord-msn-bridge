@@ -1,8 +1,6 @@
 import socket
 import hashlib
 
-connected_clients = {}
-
 def safesend(socket,data):
 	try:
 		socket.send((data+"\r\n").encode())
@@ -59,9 +57,6 @@ def ParseMessage(raw):
 	
 def SendMessage(conn,msg,email,nickname):
 	safesend(conn, constructmessage(msg,email,nickname))
-	
-def RemoveClient(conn):
-	connected_clients.pop(conn, None)
 		
 def check_int(s):
     if s[0] in ('-', '+'):
