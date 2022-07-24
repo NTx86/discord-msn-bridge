@@ -19,20 +19,23 @@ def ChangeSession(key, data):
 			MSN_sessions[key] = data
 		
 def GetSession(key):
-	if key in MSN_sessions:
-		return MSN_sessions[key]
-	else:
-		return None
+	with threading.Lock():
+		if key in MSN_sessions:
+			return MSN_sessions[key]
+		else:
+			return None
 	
 def DoesSessionExists(key):
-	if key in MSN_sessions:
-		return True
-	return False
+	with threading.Lock():
+		if key in MSN_sessions:
+			return True
+		return False
 	
 #Switchboard Session functions
 
 def RemoveSBsession(conn):
-	SB_sessions.pop(conn, None)
+	with threading.Lock():
+		SB_sessions.pop(conn, None)
 	
 def CreateSBsession(key, data):
 	with threading.Lock():
@@ -44,15 +47,17 @@ def ChangeSBsession(key, data):
 			SB_sessions[key] = data
 		
 def GetSBsession(key):
-	if key in SB_sessions:
-		return SB_sessions[key]
-	else:
-		return None
+	with threading.Lock():
+		if key in SB_sessions:
+			return SB_sessions[key]
+		else:
+			return None
 	
 def DoesSBsessionExists(key):
-	if key in SB_sessions:
-		return True
-	return False
+	with threading.Lock():
+		if key in SB_sessions:
+			return True
+		return False
 	
 #Authkey Session functions
 
