@@ -40,16 +40,19 @@ def NF_USR(conn,data,userinfo):
 				return 2
 			safesend(conn,f"USR {sync} MD5 S 1013928519.693957190")
 			print("sent a challenge")
-			userinfo["email"] = email
-			userinfo["version"] = random.randint(1,1000) #random
-			userinfo["nickname"] = "MSNuser"
+			userinfo["session"] = {} #this will be our session
+			userinfo["session"]["email"] = email
+			userinfo["session"]["version"] = random.randint(1,1000) #random
+			userinfo["session"]["nickname"] = "MSNuser"
+			userinfo["email"] = email #for internal session
 			return 0
 		if cmdarg[3] == "S":
 			#usrdata = getuserdata(email)
 			passwordmd5sent = cmdarg[4]
 			if passwordmd5sent == GenerateMD5password(config.MSN_password, "1013928519.693957190"):
-				nickname = userinfo["nickname"]
-				MSNSession.CreateSession(email, userinfo)
+				nickname = userinfo["session"]["nickname"]
+				MSNSession.CreateSession(email, userinfo["session"])
+				del userinfo["session"] #delete the session from internal session as we dont need it anymore
 				userinfo["cmdwlist"] = []
 				safesend(conn, f"USR {sync} OK {email} {nickname}")
 				print("auth complete")
