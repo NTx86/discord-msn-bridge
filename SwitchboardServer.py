@@ -7,6 +7,9 @@ def SB_USR(conn,data,conninfo,raw):
 	cmdarg = data.split(' ')
 	sync, email, key = cmdarg[1],cmdarg[2],cmdarg[3]
 	userdata = MSNSession.ReadKey(int(key))
+	if userdata == None:
+		senderror(conn,sync,911)
+		return 2
 	email, nickname = userdata['email'], userdata['nickname']
 	conninfo["email"] = email
 	MSNSession.CreateSBsession(conn,"")
