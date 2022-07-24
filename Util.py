@@ -1,4 +1,5 @@
 import socket
+import hashlib
 
 connected_clients = {}
 
@@ -61,10 +62,13 @@ def SendMessage(conn,msg,email,nickname):
 	
 def RemoveClient(conn):
 	connected_clients.pop(conn, None)
-	#if conn in connected_clients:
-	#	connected_clients.remove(conn)
 		
 def check_int(s):
     if s[0] in ('-', '+'):
         return s[1:].isdigit()
     return s.isdigit()
+	
+def GenerateMD5password(password,challenge):
+	concentrate = challenge+password
+	md5 = hashlib.md5(concentrate.encode())
+	return md5.hexdigest()

@@ -43,9 +43,13 @@ def NF_USR(conn,data,userinfo):
 		if cmdarg[3] == "S":
 			#usrdata = getuserdata(email)
 			passwordmd5sent = cmdarg[4]
-			nickname = "MSNuser"
-			safesend(conn, f"USR {sync} OK {email} {nickname}")
-			print("auth complete")
+			if passwordmd5sent == GenerateMD5password(config.MSN_password, "1013928519.693957190"):
+				nickname = "MSNuser"
+				safesend(conn, f"USR {sync} OK {email} {nickname}")
+				print("auth complete")
+			else:
+				senderror(conn,sync,911)
+				return 2
 			return 0
 			
 			
