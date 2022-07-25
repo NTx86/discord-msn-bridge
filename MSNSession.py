@@ -64,7 +64,6 @@ def DoesSBsessionExists(key):
 def CreateKey(key, data):
 	with threading.Lock():
 		MSN_keys[key] = data
-	print(MSN_keys)
 		
 def ReadKey(key):
 	with threading.Lock():

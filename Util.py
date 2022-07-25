@@ -1,10 +1,13 @@
 import socket
 import hashlib
 
-def safesend(socket,data):
+def safesend(socket,data,printsent=True,addnewline=True):
 	try:
-		socket.send((data+"\r\n").encode())
-		print(f"S>C: {data}")
+		newline = ""
+		if addnewline == True: newline = "\r\n"
+		socket.send((data+newline).encode())
+		if printsent == True:
+			print(f"S>C: {data}")
 	except Exception as e:
 		print("socket send fail")
 		print(e)

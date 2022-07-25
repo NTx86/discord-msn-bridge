@@ -25,7 +25,7 @@ def ParseHTTP(conn,data):
 def constructhttp(uheaders, content):
 	construct = ""
 	headers = {"Accept-Ranges":"bytes",
-				"Connection":"keep-alive"}
+				"Connection":"Closed"}
 	headers = {**headers, **uheaders}
    
 	construct = construct + "HTTP/1.1 200 OK\r\n"
@@ -33,7 +33,7 @@ def constructhttp(uheaders, content):
 	for header in headers:
 		headerstr += header + ": " + headers[header] + "\r\n"
 
-	construct = construct + headerstr + '\r\n' + content #+ '\n'
+	construct = construct + headerstr + '\r\n' + content + '\n'
 	return construct
 
 def WS_connected(conn, addr):
@@ -43,20 +43,20 @@ def WS_connected(conn, addr):
 			data = conn.recv(BUFFER_SIZE)
 			if not data: break
 			data = data.decode('utf-8')[:-2]
-			print(f"C>S: {data}")
 			request, headers, msg = ParseHTTP(conn,data)
 			if request[1] == "/rdr/pprdr.asp":
-				safesend(conn, constructhttp({"Passporturls":f"DALogin=http://{config.server}/login"},""))
+				safesend(conn, constructhttp({"Passporturls":f"DALogin=http://{config.server}/login"},""),False,False)
 			elif request[1] == "/login":
 				password = headers['Authorization'].split(",")[3].split("=")[1]
 				if config.MSN_password == password:
 					token = str(random.randint(0,9999999999))+"."+str(random.randint(0,9999999999))
 					MSNSession.CreateKey(token,headers)
-					safesend(conn, constructhttp({"Authentication-Info": f"Passport1.4 da-status=success,from-PP='{token}'"},""))
+					safesend(conn, constructhttp({"Authentication-Info": f"Passport1.4 da-status=success,from-PP='{token}'"},""),False,False)
 				else:
-					conn.close() #i have no documentation on what to do if it fails
+					placeholder = 0 #i have no documentation on what to do if it fails
 			else:
-				safesend(conn, constructhttp({},"404 API not found"))
+				safesend(conn, constructhttp({"Content-Type":"text/html; charset=iso-8859-1"},"404 API not found"),False,False)
+			conn.close()
 		conn.close()
 	except socket.error as e:
 		conn.close()
