@@ -4,6 +4,7 @@ from NotificationServer import NF_cmds
 from SwitchboardServer import SB_cmds
 from Util import *
 from bot import startbot, Botthread
+from Webserver import startlisteningWS
 import config
 import MSNSession
 
@@ -18,7 +19,7 @@ def connected(conn,addr,srvcmds):
 	email, username, status, version, msnver = 1,2,3,4,5
 	userinfo = {"email":None,
 				"msnver":None,
-				"cmdwlist":["VER","INF","USR","OUT"],
+				"cmdwlist":["VER","INF","USR","CVR","OUT"],
 				"authstage":False}
 	try:
 		while 1:
@@ -121,9 +122,14 @@ def startlisteningSB():
 		thread.start()
 		#connectedSB()
 
+#Start switchboard server listener
 SBthread = threading.Thread(target=startlisteningSB)
 SBthread.start()
+#Start bot
 Botthread.start()
+#Start Webserver
+SBthread = threading.Thread(target=startlisteningWS)
+SBthread.start()
 
 while 1:
 	TCP_IP = '0.0.0.0'

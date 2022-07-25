@@ -11,14 +11,16 @@ MSNPversions = {"MSNP2":2,
 				"MSNP4":4,
 				"MSNP5":5,
 				"MSNP6":6,
-				"MSNP7":7}
+				"MSNP7":7,
+				"MSNP8":8,
+				"MSNP9":9}
 
 def NF_VER(conn,data,userinfo):
 	cmdarg = data.split(' ')
 	sync = cmdarg[1]
 	ver = cmdarg[2]
 	if not ver in MSNPversions:
-		ver = "MSNP7"
+		ver = "MSNP9"
 	safesend(conn, f"VER {sync} {ver} CVR0")
 	userinfo["msnver"] = MSNPversions[ver]
 	return 0
@@ -68,7 +70,41 @@ def NF_USR(conn,data,userinfo):
 				senderror(conn,sync,911)
 				return 2
 			return 0
-			
+	elif cmdarg[2] == 'TWN':
+		if cmdarg[3] == "I":
+			email = cmdarg[4].lower()
+			if MSNSession.DoesSessionExists(email):
+				senderror(conn, sync, 207) #Already logged in
+				return 2
+			safesend(conn,f"USR {sync} TWN S ct=1312946236,rver=6.1.6206.0,wp=FS_40SEC_0_COMPACT,lc=1033,id=507,ru=http:%2F%2Fmessenger.msn.com,tw=0,kpp=1,kv=4,ver=2.1.6000.1,rn=1lgjBfIL,tpf=b0735e3a873dfb5e75054465196398e0")
+			print("sent a challenge")
+			userinfo["session"] = {} #this will be our session
+			userinfo["session"]["email"] = email
+			userinfo["session"]["version"] = random.randint(1,1000) #random
+			userinfo["session"]["nickname"] = "MSNuser"
+			userinfo["email"] = email #for internal session
+			userinfo["authstage"] = True
+			return 0
+		if cmdarg[3] == "S":
+			#usrdata = getuserdata(email)
+			if userinfo["authstage"] == False:
+				return 1
+			TWMsent = cmdarg[4]
+			if MSNSession.ReadKey(TWMsent) != None:
+				nickname = userinfo["session"]["nickname"]
+				MSNSession.CreateSession(email, userinfo["session"])
+				del userinfo["session"] #delete the session from internal session as we dont need it anymore
+				userinfo["cmdwlist"] = []
+				if userinfo["msnver"] == 9:
+					safesend(conn, f"USR {sync} OK {email} {nickname} 1 0")
+				else:
+					safesend(conn, f"USR {sync} OK {email} {nickname}")
+				print("auth complete")
+			else:
+				senderror(conn,sync,911)
+				return 2
+			return 0
+	return 1
 			
 def NF_SYN(conn,data,userinfo):
 	cmdarg = data.split(' ')
@@ -145,6 +181,9 @@ def NF_REA(conn,data,userinfo):
 		with threading.Lock():
 			session["nickname"] = usernamechg
 	safesend(conn, f"REA {sync} 19 {useremail} {usernamechg}")
+	
+def NF_PNG(conn,data,userinfo):
+	safesend(conn,"QNG 50")
 
 NF_cmds = {"VER": NF_VER,
 			"INF": NF_INF,
@@ -154,4 +193,5 @@ NF_cmds = {"VER": NF_VER,
 			"CVR": NF_CVR,
 			"XFR": NF_XFR,
 			"OUT": NF_OUT,
-			"REA": NF_REA}
+			"REA": NF_REA,
+			"PNG": NF_PNG}
