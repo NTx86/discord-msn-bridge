@@ -1,5 +1,6 @@
 import socket
 import hashlib
+import random
 
 def safesend(socket,data,printsent=True,addnewline=True):
 	try:
@@ -28,6 +29,17 @@ def SendOutLST(conn,sync,mlist,sentversion,userlist,usergroup):
 		email = user
 		nickname = userlist[user]
 		safesend(conn, f"LST {sync} {mlist} {sentversion} {currentcount} {userlistcount} {email} {nickname}{usergroup}")
+		currentcount += 1
+		
+def SendOutLST10(conn,userlist):
+	userlistcount = len(userlist)
+	currentcount = 1
+	for user in userlist:
+		email = user
+		nickname = userlist[user]
+		uuid = f"{random.randint(10000000,99999999)}-0000-0000-0000-000000000000"
+		uuid2 = f"{random.randint(10000000,99999999)}-0000-0000-0000-000000000000"
+		safesend(conn, f"LST N={email} F={nickname} C={uuid} 11 {uuid2}")
 		currentcount += 1
 		
 def constructmessage(msg,email,nickname):

@@ -13,14 +13,15 @@ MSNPversions = {"MSNP2":2,
 				"MSNP6":6,
 				"MSNP7":7,
 				"MSNP8":8,
-				"MSNP9":9}
+				"MSNP9":9,
+				"MSNP10":10}
 
 def NF_VER(conn,data,userinfo):
 	cmdarg = data.split(' ')
 	sync = cmdarg[1]
 	ver = cmdarg[2]
 	if not ver in MSNPversions:
-		ver = "MSNP9"
+		ver = "MSNP10"
 	safesend(conn, f"VER {sync} {ver} CVR0")
 	userinfo["msnver"] = MSNPversions[ver]
 	return 0
@@ -97,6 +98,8 @@ def NF_USR(conn,data,userinfo):
 				userinfo["cmdwlist"] = []
 				if userinfo["msnver"] == 9:
 					safesend(conn, f"USR {sync} OK {email} {nickname} 1 0")
+				elif userinfo["msnver"] >=10:
+					safesend(conn,f"USR {sync} OK {email} 1 0")
 				else:
 					safesend(conn, f"USR {sync} OK {email} {nickname}")
 				print("auth complete")
@@ -109,37 +112,54 @@ def NF_USR(conn,data,userinfo):
 def NF_SYN(conn,data,userinfo):
 	cmdarg = data.split(' ')
 	sync = cmdarg[1]
-	sentversion = int(cmdarg[2])+1
-	
-	safesend(conn, f"SYN {sync} {sentversion}") #first response
-	
-	#privacy settings
-	safesend(conn, f"GTC {sync} {sentversion} A")
-	safesend(conn, f"BLP {sync} {sentversion} AL")
-	safesend(conn, f"BLP {sync} {sentversion} AL")
-	#usergroup
-	usergroup = -1
-	if userinfo["msnver"] >= 7:
-		safesend(conn, f"LSG {sync} {sentversion} 1 1 0 Other%20Contacts 0")
-		usergroup = 0
-	#user list
-	userlist = GetUserFriendsByEmailList(userinfo["email"])
-	#foward list
-	SendOutLST(conn,sync,"FL",sentversion,userlist,usergroup)
-	#some list
-	SendOutLST(conn,sync,"AL",sentversion,userlist,-1)
-	#block list
-	safesend(conn, f"LST {sync} BL {sentversion} 0 0")
-	#reverse list
-	SendOutLST(conn,sync,"RL",sentversion,userlist,-1)
-	
-	#send online statuses
-	currentcount = 1
-	for user in userlist:
-		email = user
-		nickname = userlist[user]
-		safesend(conn, f"ILN {sync} NLN {email} {nickname}")
-		currentcount += 1
+	if userinfo["msnver"] < 10:
+		sentversion = int(cmdarg[2])+1
+		safesend(conn, f"SYN {sync} {sentversion}") #first response
+		
+		#privacy settings
+		safesend(conn, f"GTC {sync} {sentversion} A")
+		safesend(conn, f"BLP {sync} {sentversion} AL")
+		safesend(conn, f"BLP {sync} {sentversion} AL")
+		#usergroup
+		usergroup = -1
+		if userinfo["msnver"] >= 7:
+			safesend(conn, f"LSG {sync} {sentversion} 1 1 0 Other%20Contacts 0")
+		#user list
+		userlist = GetUserFriendsByEmailList(userinfo["email"])
+		#foward list
+		SendOutLST(conn,sync,"FL",sentversion,userlist,usergroup)
+		#some list
+		SendOutLST(conn,sync,"AL",sentversion,userlist,-1)
+		#block list
+		safesend(conn, f"LST {sync} BL {sentversion} 0 0")
+		#reverse list
+		SendOutLST(conn,sync,"RL",sentversion,userlist,-1)
+		
+		#send online statuses
+		currentcount = 1
+		for user in userlist:
+			email = user
+			nickname = userlist[user]
+			safesend(conn, f"ILN {sync} NLN {email} {nickname}")
+			currentcount += 1
+	else:
+		nickname = MSNSession.GetSession(userinfo["email"])["nickname"]
+		safesend(conn, f"SYN {sync} 2005-04-23T18:57:44.8130000-07:00 2005-04-23T18:57:54.2070000-07:00 3 0")
+		#privacy settings
+		safesend(conn, f"GTC A")
+		safesend(conn, f"BLP AL")
+		safesend(conn, f"PRP MFN {nickname}")
+		#user list
+		userlist = GetUserFriendsByEmailList(userinfo["email"])
+		SendOutLST10(conn,userlist)
+		
+		#send online statuses
+		currentcount = 1
+		for user in userlist:
+			email = user
+			nickname = userlist[user]
+			safesend(conn, f"ILN {sync} NLN {email} {nickname}")
+			currentcount += 1
 	
 	return 0
 	
@@ -184,6 +204,11 @@ def NF_REA(conn,data,userinfo):
 	
 def NF_PNG(conn,data,userinfo):
 	safesend(conn,"QNG 50")
+	
+def NF_URL(conn,data,userinfo):
+	cmdarg = data.split(' ')
+	sync = cmdarg[1]
+	safesend(conn,f"URL {sync} unknown http://www.example.com")
 
 NF_cmds = {"VER": NF_VER,
 			"INF": NF_INF,
@@ -194,4 +219,5 @@ NF_cmds = {"VER": NF_VER,
 			"XFR": NF_XFR,
 			"OUT": NF_OUT,
 			"REA": NF_REA,
-			"PNG": NF_PNG}
+			"PNG": NF_PNG,
+			"URL": NF_URL}
