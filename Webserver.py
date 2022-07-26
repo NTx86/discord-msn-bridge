@@ -5,6 +5,8 @@ import config
 import random
 import MSNSession
 
+printdebug = False
+
 def ParseHTTP(conn,data):
 	headers = {}
 	lines = data.split("\r\n")
@@ -44,18 +46,20 @@ def WS_connected(conn, addr):
 			if not data: break
 			data = data.decode('utf-8')[:-2]
 			request, headers, msg = ParseHTTP(conn,data)
+			if printdebug == True:
+				print(headers)
 			if request[1] == "/rdr/pprdr.asp":
-				safesend(conn, constructhttp({"Passporturls":f"DALogin=http://{config.server}/login"},""),False,False)
+				safesend(conn, constructhttp({"PassportURLs":f"DALogin=http://{config.server}/login"},""),printdebug,False)
 			elif request[1] == "/login":
 				password = headers['Authorization'].split(",")[3].split("=")[1]
 				if config.MSN_password == password:
 					token = str(random.randint(0,9999999999))+"."+str(random.randint(0,9999999999))
 					MSNSession.CreateKey(token,headers)
-					safesend(conn, constructhttp({"Authentication-Info": f"Passport1.4 da-status=success,from-PP='{token}'"},""),False,False)
+					safesend(conn, constructhttp({"Authentication-Info": f"Passport1.4 da-status=success,from-PP='{token}'"},""),printdebug,False)
 				else:
 					placeholder = 0 #i have no documentation on what to do if it fails
 			else:
-				safesend(conn, constructhttp({"Content-Type":"text/html; charset=iso-8859-1"},"404 API not found"),False,False)
+				safesend(conn, constructhttp({"Content-Type":"text/html; charset=iso-8859-1"},"404 API not found"),printdebug,False)
 			conn.close()
 		conn.close()
 	except socket.error as e:
